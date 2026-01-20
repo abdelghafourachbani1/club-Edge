@@ -1,8 +1,6 @@
 <?php
 
 
-use RuntimeException;
-use InvalidArgumentException;
 class Router
 {
     // Singlton Pattern NOT Implemented Yet

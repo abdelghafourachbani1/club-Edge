@@ -1,9 +1,5 @@
 <?php
 
-
-use RuntimeException;
-
-
 class Controller
 {
     protected function render(string $view, array $data = []): void
