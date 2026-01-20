@@ -1,9 +1,6 @@
 <?php
-
 namespace App\Models;
-
-class Article
-{
+class Article{
     private int $id;
     private string $title;
     private string $content;
@@ -13,16 +10,7 @@ class Article
     private int $authorId;
     private \DateTime $createdAt;
 
-    public function __construct(
-        int $id,
-        string $title,
-        string $content,
-        array $images,
-        int $eventId,
-        int $clubId,
-        int $authorId,
-        \DateTime $createdAt
-    ) {
+    public function __construct(int $id,string $title,string $content,array $images,int $eventId,int $clubId,int $authorId,\DateTime $createdAt) {
         $this->id = $id;
         $this->title = $title;
         $this->content = $content;
@@ -33,19 +21,47 @@ class Article
         $this->createdAt = $createdAt;
     }
 
-    public function getId(): int {return -1;}
-    public function getTitle(): string {return "";}
-    public function setTitle(string $title): void {}
+    public function getId(): int{
+        return $this->id;
+    }
 
-    public function getContent(): string {return "";}
-    public function setContent(string $content): void {}
+    public function getTitle(): string{
+        return $this->title;
+    }
 
-    public function getImages(): array {return [];}
-    public function setImages(array $images): void {}
+    public function getContent(): string{
+        return $this->content;
+    }
 
-    public function getEventId(): int {return -1;}
-    public function getClubId(): int {return -1;}
-    public function getAuthorId(): int {return -1;}
+    public function getImages(): array{
+        return $this->images;
+    }
 
-    public function getCreatedAt(): \DateTime {return $this->createdAt;}
+    public function getEventId(): int{
+        return $this->eventId;
+    }
+
+    public function getClubId(): int{
+        return $this->clubId;
+    }
+
+    public function getAuthorId(): int{
+        return $this->authorId;
+    }
+
+    public function getCreatedAt(): \DateTime{
+        return $this->createdAt;
+    }
+
+    public function setTitle(string $title): void{
+        $this->title = htmlspecialchars(trim($title));
+    }
+
+    public function setContent(string $content): void{
+        $this->content = htmlspecialchars(trim($content));
+    }
+
+    public function setImages(array $images): void{
+        $this->images = $images;
+    }
 }
