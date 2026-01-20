@@ -13,7 +13,7 @@ define('DB_HOST', 'localhost');
 define('DB_PORT', '5432');
 define('DB_USER', 'postgres');
 define('DB_PASS', 'password');
-define('DB_NAME', 'clubEdge_db');
+define('DB_NAME', 'clubEdge');
 
 // App URL
 define('BASE_URL', rtrim('http://localhost/club-Edge', '/'));
