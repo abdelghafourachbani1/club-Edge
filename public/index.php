@@ -1,7 +1,7 @@
 <?php
 
-declare(strict_types=1);
 
+declare(strict_types=1);
 require_once __DIR__ . '/../config/App.php';
 
 $router = new Router();
@@ -19,3 +19,5 @@ try {
         echo '500 Internal Server Error';
     }
 }
+
+
