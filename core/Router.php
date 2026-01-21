@@ -1,6 +1,8 @@
 <?php
 
 
+use RuntimeException;
+use InvalidArgumentException;
 class Router
 {
     // Singlton Pattern NOT Implemented Yet
@@ -66,10 +68,10 @@ class Router
         }
 
         // 404
-        
+
         http_response_code(404);
 
-        $viewPath = BASE_PATH . '/app/Views/404.php';
+        $viewPath = BASE_PATH . '/App/Views/404.php';
         if (file_exists($viewPath)) {
             include $viewPath;
         } else {
