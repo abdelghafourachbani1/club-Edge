@@ -64,4 +64,4 @@ class Article{
     public function setImages(array $images): void{
         $this->images = $images;
     }
-}
+} 
