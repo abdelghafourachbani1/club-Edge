@@ -1,19 +1,32 @@
 <?php
+require_once __DIR__ . '/../config/App.php';
 
 
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
-
+use App\Core\Logger;
 class Controller
 {
     protected Environment $twig;
+    
     public function __construct()
     {
+        
         $loader = new FilesystemLoader(BASE_PATH . '/App/Views');
         $this->twig = new Environment($loader, [
             'cache' => false, // disable caching for development
             'debug' => true
         ]);
+    }
+
+    protected function log(string $level, string $message, array $context = []): void
+    {
+        $level = strtolower($level);
+        if (method_exists(Logger::class, $level)) {
+            Logger::$level($message, $context);
+        } else {
+            Logger::info($message, $context);
+        }
     }
     protected function render(string $view, array $data = []): void
     {

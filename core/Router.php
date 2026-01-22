@@ -71,7 +71,7 @@ class Router
 
         http_response_code(404);
 
-        $viewPath = BASE_PATH . '/App/Views/404.php';
+        $viewPath = BASE_PATH . '/App/Views/errors/404.twig';
         if (file_exists($viewPath)) {
             include $viewPath;
         } else {
