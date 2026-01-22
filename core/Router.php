@@ -13,6 +13,11 @@ class Router
         'OPTIONS' => [],
     ];
 
+    private array $middlewareMap = [
+        'auth' => \App\Middlewares\AuthMiddleware::class,
+        'role' => \App\Middlewares\RoleMiddleware::class,
+    ];
+
     public function get(string $path, $handler): self
     {
         return $this->addRoute('GET', $path, $handler);
@@ -27,6 +32,24 @@ class Router
     {
         foreach (array_keys($this->routes) as $method) {
             $this->addRoute($method, $path, $handler);
+        }
+        return $this;
+    }
+
+    public function middleware(array|string $middleware): self
+    {
+        // $_SESSION['user'] = ['role' => 'admin', 'email' => 'admin@test.com']; // for testing
+        unset($_SESSION['user']);
+        $methods = array_keys($this->routes);
+        foreach ($methods as $method) {
+            if (!empty($this->routes[$method])) {
+                $lastIndex = count($this->routes[$method]) - 1;
+                $currentMiddleware = (array)$middleware;
+                $this->routes[$method][$lastIndex]['middleware'] = array_merge(
+                    $this->routes[$method][$lastIndex]['middleware'] ?? [],
+                    $currentMiddleware
+                );
+            }
         }
         return $this;
     }
@@ -60,6 +83,7 @@ class Router
         foreach ($this->routes[$method] ?? [] as $route) {
             $params = [];
             if ($this->match($route['path'], $path, $params)) {
+                $this->runMiddleware($route['middleware'] ?? [], $params);
                 $this->invoke($route['handler'], $params);
                 return;
             }
@@ -88,6 +112,7 @@ class Router
         $this->routes[$method][] = [
             'path' => $path,
             'handler' => $handler,
+            'middleware' => [],
         ];
 
         return $this;
@@ -136,5 +161,33 @@ class Router
         }
 
         throw new InvalidArgumentException('Invalid route handler');
+    }
+
+    private function runMiddleware(array $middlewares, array $params): void
+    {
+        foreach ($middlewares as $middleware) {
+            $args = [];
+            if (str_contains($middleware, ':')) {
+                [$middleware, $argString] = explode(':', $middleware, 2);
+                $args = explode(',', $argString);
+            }
+
+            $middlewareClass = $this->middlewareMap[$middleware] ?? $middleware;
+
+            if (!class_exists($middlewareClass)) {
+                throw new RuntimeException("Middleware class not found: {$middlewareClass}");
+            }
+
+            $middlewareInstance = new $middlewareClass();
+            if (!$middlewareInstance instanceof MiddlewareInterface) {
+                throw new RuntimeException("Middleware {$middlewareClass} must implement MiddlewareInterface");
+            }
+
+            if (!empty($args)) {
+                $middlewareInstance->handle($params, ...$args);
+            } else {
+                $middlewareInstance->handle($params);
+            }
+        }
     }
 }
