@@ -1,5 +1,5 @@
 <?php
-// start session if not started
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -15,6 +15,8 @@ define('DB_USER', 'farfoure');
 define('DB_PASS', 'yns1234');
 define('DB_NAME', 'clubedge');
 
+
 // App URL
 define('BASE_URL', rtrim('http://localhost/club-Edge', '/'));
 define('BASE_PATH', dirname(__DIR__));
+define('LOG_PATH', BASE_PATH . '/logs');
