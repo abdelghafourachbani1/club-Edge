@@ -1,8 +1,6 @@
 <?php
 
 
-use RuntimeException;
-use InvalidArgumentException;
 class Router
 {
     // Singlton Pattern NOT Implemented Yet
@@ -33,45 +31,47 @@ class Router
         return $this;
     }
 
-    public function dispatch(?string $requestUri = null, ?string $method = null): void
-    {
+    public function dispatch(?string $requestUri = null, ?string $method = null): void {
+
+        
         $method = strtoupper($method ?? ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
         $requestUri = $requestUri ?? ($_SERVER['REQUEST_URI'] ?? '/');
-
+        
         $path = parse_url($requestUri, PHP_URL_PATH) ?? '/';
-
+        
         $basePath = '';
         if (defined('BASE_URL')) {
-            $basePath = parse_url(BASE_URL, PHP_URL_PATH) ?? '';
-        }
-        if ($basePath !== '') {
-            $basePath = '/' . trim($basePath, '/');
-            if (strncasecmp($path, $basePath, strlen($basePath)) === 0) {
-                $path = substr($path, strlen($basePath));
+                $basePath = parse_url(BASE_URL, PHP_URL_PATH) ?? '';
             }
-        }
-
-
-        if (str_starts_with($path, '/index.php')) {
+            if ($basePath !== '') {
+                    $basePath = '/' . trim($basePath, '/');
+                    if (strncasecmp($path, $basePath, strlen($basePath)) === 0) {
+                            $path = substr($path, strlen($basePath));
+                        }
+                    }
+                    
+                    
+                    if (str_starts_with($path, '/index.php')) {
             $path = substr($path, 10);
         }
-
+        
         $path = '/' . trim($path, '/');
         if ($path === '//') $path = '/';
-
+        
         foreach ($this->routes[$method] ?? [] as $route) {
             $params = [];
             if ($this->match($route['path'], $path, $params)) {
                 $this->invoke($route['handler'], $params);
                 return;
-            }
-        }
+                }
+                }
+
 
         // 404
-        
+
         http_response_code(404);
 
-        $viewPath = BASE_PATH . '/app/Views/404.php';
+        $viewPath = BASE_PATH . '/App/Views/404.php';
         if (file_exists($viewPath)) {
             include $viewPath;
         } else {
@@ -95,11 +95,10 @@ class Router
         return $this;
     }
 
-    private function match(string $routePath, string $requestPath, array &$params): bool
-    {
+    private function match(string $routePath, string $requestPath, array &$params): bool {
         if ($routePath === $requestPath) {
             return true;
-        }
+         }
 
         $pattern = preg_replace('#\{([a-zA-Z_][a-zA-Z0-9_]*)\}#', '(?P<$1>[^/]+)', $routePath);
         $pattern = '#^' . $pattern . '$#';
@@ -117,15 +116,15 @@ class Router
         return true;
     }
 
-    private function invoke($handler, array $params): void
-    {
+    private function invoke($handler, array $params): void {
+
         if (is_callable($handler)) {
             call_user_func_array($handler, $params);
             return;
-        }
-
-        if (is_string($handler) && str_contains($handler, '@')) {
-            [$controllerName, $method] = explode('@', $handler, 2);
+            }
+            
+            if (is_string($handler) && str_contains($handler, '@')) {
+                [$controllerName, $method] = explode('@', $handler, 2);
             if (!class_exists($controllerName)) {
                 throw new RuntimeException("Controller not found: {$controllerName}");
             }
@@ -135,7 +134,7 @@ class Router
             }
             call_user_func_array([$controller, $method], $params);
             return;
-        }
+    }
 
         throw new InvalidArgumentException('Invalid route handler');
     }

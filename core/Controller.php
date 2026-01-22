@@ -1,41 +1,72 @@
 <?php
 
 
-use RuntimeException;
-
+use Twig\Loader\FilesystemLoader;
+use Twig\Environment;
 
 class Controller
 {
+    protected Environment $twig;
+    public function __construct()
+    {
+        $loader = new FilesystemLoader(BASE_PATH . '/App/Views');
+        $this->twig = new Environment($loader, [
+            'cache' => false, // disable caching for development
+            'debug' => true
+        ]);
+    }
     protected function render(string $view, array $data = []): void
     {
         $viewFile = $this->resolveViewPath($view);
-        if (!is_file($viewFile)) {
 
-            throw new RuntimeException("View not found: {$viewFile}");
+        if (str_ends_with($viewFile, '.twig')) {
+            // Twig needs path relative to App/Views
+            $relativeTwigPath = str_replace(BASE_PATH . '/App/Views/', '', $viewFile);
+            $relativeTwigPath = str_replace('\\', '/', $relativeTwigPath); // Ensure forward slashes for Twig
+            echo $this->twig->render($relativeTwigPath, $data);
+        } elseif (is_file($viewFile)) {
+            extract($data, EXTR_SKIP);
+            require $viewFile;
+        } else {
+            throw new RuntimeException("View not found: {$view}");
         }
-
-        extract($data, EXTR_SKIP);
-        require $viewFile; // injected into the method render
     }
 
     protected function renderWithLayout(string $view, array $data = []): void
     {
-        $header = BASE_PATH . '/App/Views/layouts/header.php';
-        $nav = BASE_PATH . '/App/Views/layouts/nav.php';
-        $footer = BASE_PATH . '/App/Views/layouts/footer.php';
+        $header = $this->resolveViewPath('layouts/header');
+        $nav = $this->resolveViewPath('layouts/navbar'); // The file is navbar.twig/php
+        $footer = $this->resolveViewPath('layouts/footer');
 
         extract($data, EXTR_SKIP);
+
+        // Render header
         if (is_file($header)) {
-            require $header;
+            if (str_ends_with($header, '.twig')) {
+                echo $this->twig->render('layouts/header.twig', $data);
+            } else {
+                require $header;
+            }
         }
+
+        // Render nav
         if (is_file($nav)) {
-            require $nav;
+            if (str_ends_with($nav, '.twig')) {
+                echo $this->twig->render('layouts/navbar.twig', $data);
+            } else {
+                require $nav;
+            }
         }
 
         $this->render($view, $data);
 
+        // Render footer
         if (is_file($footer)) {
-            require $footer;
+            if (str_ends_with($footer, '.twig')) {
+                echo $this->twig->render('layouts/footer.twig', $data);
+            } else {
+                require $footer;
+            }
         }
     }
 
@@ -52,7 +83,7 @@ class Controller
         $relative = str_replace('.', '/', trim($view));
         $relative = ltrim($relative, '/');
 
-        $basePath = BASE_PATH . '/app/Views/' . $relative;
+        $basePath = BASE_PATH . '/App/Views/' . $relative;
 
         if (is_file($basePath . '.php')) {
             return $basePath . '.php';
