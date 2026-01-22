@@ -21,6 +21,5 @@ $router->get('/test', static function (): void {
 
 
 // Admin
-$router->get('/admin/example', 'App\\Controllers\\AdminController@example');
-;
-
+$router->get('/admin/example', 'App\\Controllers\\AdminController@example')
+    ->middleware('role:admin');
