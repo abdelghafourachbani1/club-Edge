@@ -21,7 +21,7 @@ class Database
                 $host = defined('DB_HOST') ? DB_HOST : 'localhost';
                 $port = defined('DB_PORT') ? DB_PORT : '5432';
                 $user = defined('DB_USER') ? DB_USER : 'postgres';
-                $pass = defined('DB_PASS') ? DB_PASS : 'Sa@123456';
+                $pass = defined('DB_PASS') ? DB_PASS : 'l9irch1234';
                 $name = defined('DB_NAME') ? DB_NAME : 'clubEdge';
 
                 // variables for PostgreSQ
