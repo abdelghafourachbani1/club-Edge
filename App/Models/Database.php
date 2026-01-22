@@ -17,12 +17,15 @@ class Database
     {
         if (self::$instance === null) {
             try {
+                // psql -U farfoure -d clubedge -h localhost
 
                 $host = defined('DB_HOST') ? DB_HOST : 'localhost';
                 $port = defined('DB_PORT') ? DB_PORT : '5432';
-                $user = defined('DB_USER') ? DB_USER : 'postgres';
-                $pass = defined('DB_PASS') ? DB_PASS : 'Sa@123456';
-                $name = defined('DB_NAME') ? DB_NAME : 'clubEdge';
+                $user = defined('DB_USER') ? DB_USER : 'farfoure';
+                // $user = defined('DB_USER') ? DB_USER : 'postgres';
+                // $pass = defined('DB_PASS') ? DB_PASS : 'Sa@123456';
+                $pass = defined('DB_PASS') ? DB_PASS : 'yns1234';
+                $name = defined('DB_NAME') ? DB_NAME : 'clubedge';
 
                 // variables for PostgreSQ
                 $dsn = "pgsql:host={$host};port={$port};dbname={$name}";
