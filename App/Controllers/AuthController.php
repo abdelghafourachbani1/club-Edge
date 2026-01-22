@@ -64,24 +64,35 @@ class AuthController extends Controller
         $password = $_POST['password'];
         $pdo = Database::getInstance();
         $userRepo = new UserRepository($pdo);
+        // $error = null;
 
         // $user = $userRepo->findByEmail($email);
         $user = $userRepo->findByEmail($email);
-        // if ($user) {
-        //     if (password_verify($password, $user['password'])) {
-        //         echo "Login successful";
-        //     } else {
-        //         echo "Invalid password";
-        //     }
-        // } else {
-        //     echo "User not found";
-        // }
-        $this->renderWithLayout('auth/login', ['user' => $user]);
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user'] = [
+                    'id'         => (int)$user['id'],
+                    'first_name' => $user['first_name'],
+                    'last_name'  => $user['last_name'],
+                    'email'      => $user['email'],
+                ];
+                $this->renderWithLayout('auth/login', ['user' => $user]);
+            } else {
+                $error =  "Invalid password";
+                $this->renderWithLayout('auth/login', ['error' => $error]);
+            }
+        } 
+        else {
+            // $error =  "User not found";
+            $error =  "email incorrect";
+            $this->renderWithLayout('auth/login', ['error' => $error]);
+
+        }
     }
 
     public function logout(): void
     {
         // TODO: Implement logout
-        echo "Logout";
+        session_destroy();
     }
 }
