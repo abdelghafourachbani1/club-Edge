@@ -1,8 +1,7 @@
 <?php
 
 
-class Router
-{
+class Router {
     // Singlton Pattern NOT Implemented Yet
     private array $routes = [
         'GET' => [],
