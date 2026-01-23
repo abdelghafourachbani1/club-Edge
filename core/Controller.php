@@ -15,13 +15,13 @@ class Controller
     public function __construct()
     {
         // CSRF protection for non-GET requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
-            if (!Security::validateCsrfToken($token)) {
-                http_response_code(403);
-                die('CSRF token validation failed.');
-            }
-        }
+        // if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        //     $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+        //     if (!Security::validateCsrfToken($token)) {
+        //         http_response_code(403);
+        //         die('CSRF token validation failed.');
+        //     }
+        // }
 
         $loader = new FilesystemLoader(BASE_PATH . '/App/Views');
         $this->twig = new Environment($loader, [

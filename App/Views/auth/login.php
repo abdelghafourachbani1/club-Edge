@@ -1,11 +1,16 @@
 <?php
 // $id = 3;
-if ($user) {
-    echo "<div class='alert alert-success'>User created successfully with user: " . var_dump($user) . "</div>";
-}
- else {
-    echo "<div class='alert alert-danger'>Failed to create user.</div>";
-}
+var_dump($_SESSION['user']);
+// echo $_SESSION['user']['email'];
+// if ($user) {
+//     echo "<div class='alert alert-success'>Login successful: " . var_dump($user) . "</div>";
+// }
+// else {
+//     if ($error) {
+//         echo "<div class='alert alert-danger'>$error</div>";
+//     }
+//     // echo "<div class='alert alert-danger'>Failed Login.</div>";
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">

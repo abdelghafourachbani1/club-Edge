@@ -11,6 +11,7 @@ $router->get('/test', static function (): void {
 });
 
 // Auth
+$router->get('/logout', 'App\\Controllers\\AuthController@logout');
 $router->get('/login', 'App\\Controllers\\AuthController@showLogin');
 $router->post('/login', 'App\\Controllers\\AuthController@login');
 
@@ -20,9 +21,12 @@ $router->get('/register', 'App\\Controllers\\AuthController@showRegister');
 $router->post('/register', 'App\\Controllers\\AuthController@register');
 
 
-
 // Admin
 $router->get('/admin/example', 'App\\Controllers\\AdminController@example');
+
+// Student
+$router->get('/student/dashboard', 'App\\Controllers\\StudentController@dashboard')
+->middleware('student');
 
 // Auth
 // $router->get('/auth/register', 'App\\Controllers\\AuthController@showRegister');

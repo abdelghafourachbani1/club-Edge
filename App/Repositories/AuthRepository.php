@@ -45,6 +45,13 @@ class AuthRepository{
     return (int) $stmt->fetchColumn();
 }
 
+public function logOut(): void
+{
+    session_destroy();
+    header("Location: /login");
+    exit();
+}
+
 public function allUsers(): array
 {
     $sql = "SELECT * FROM users";

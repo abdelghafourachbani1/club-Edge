@@ -14,6 +14,7 @@ class AdminController extends Controller
 
     public function example()
     {
+        session_destroy();
         $data = [
             'title' => 'Admin Example Page',
             'message' => 'This is an example page in the Admin panel.'
@@ -21,6 +22,5 @@ class AdminController extends Controller
         $this->renderWithLayout('admin/example', $data);
     }
     
-
    
 }

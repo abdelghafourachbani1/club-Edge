@@ -47,7 +47,17 @@ class AuthController extends Controller
         $id = $repo->createUser($userData);       
         // $id = $repo->allUsers();       
         // $id = 3;
-                
+        if ($id) {
+            // $_SESSION['user'] = [
+            //     'id'         => (int)$id,
+            //     'first_name' => $firstName,
+            //     'last_name'  => $lastName,
+            //     'email'      => $email,
+            // ];
+            $this->renderWithLayout('auth/login');
+        }else{
+            $this->renderWithLayout('auth/register', ['error' => 'Failed to create user']);
+        }
         // Pass $id to view to trigger the success message
         $this->renderWithLayout('auth/register', ['id' => $id]);
     }
@@ -71,10 +81,11 @@ class AuthController extends Controller
         if ($user) {
             if (password_verify($password, $user['password'])) {
                 $_SESSION['user'] = [
-                    'id'         => (int)$user['id'],
+                    'id' => (int)$user['id'],
                     'first_name' => $user['first_name'],
-                    'last_name'  => $user['last_name'],
-                    'email'      => $user['email'],
+                    'last_name' => $user['last_name'],
+                    'email'=> $user['email'],
+                    'role'=> $user['is_admin'] ? 'admin' : 'student',
                 ];
                 $this->renderWithLayout('auth/login', ['user' => $user]);
             } else {
@@ -92,7 +103,7 @@ class AuthController extends Controller
 
     public function logout(): void
     {
-        // TODO: Implement logout
         session_destroy();
+        $this->renderWithLayout('auth/login');
     }
 }

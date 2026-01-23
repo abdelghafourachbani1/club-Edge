@@ -1,8 +1,7 @@
 <?php
 // var_dump($id);
-if ($id) {
-    echo $id;
-    echo "User created successfully";
+if ($error) {
+    echo "<div class='alert alert-danger'>$error</div>";
 }
 // echo $id;
 //     if($id){
