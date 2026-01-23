@@ -39,7 +39,7 @@ class Router
     public function middleware(array|string $middleware): self
     {
         // $_SESSION['user'] = ['role' => 'admin', 'email' => 'admin@test.com']; // for testing
-        unset($_SESSION['user']);
+        // unset($_SESSION['user']);
         $methods = array_keys($this->routes);
         foreach ($methods as $method) {
             if (!empty($this->routes[$method])) {

@@ -1,6 +1,10 @@
 <?php
+
+if (isset($error)) {
+    echo "<div class='alert alert-danger'>$error</div>";
+}
 // $id = 3;
-var_dump($_SESSION['user']);
+// var_dump($_SESSION['user']);
 // echo $_SESSION['user']['email'];
 // if ($user) {
 //     echo "<div class='alert alert-success'>Login successful: " . var_dump($user) . "</div>";

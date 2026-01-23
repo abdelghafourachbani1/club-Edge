@@ -11,10 +11,10 @@ $router->get('/test', static function (): void {
 });
 
 // Auth
-$router->get('/logout', 'App\\Controllers\\AuthController@logout');
 $router->get('/login', 'App\\Controllers\\AuthController@showLogin');
 $router->post('/login', 'App\\Controllers\\AuthController@login');
 
+$router->get('/logout', 'App\\Controllers\\AuthController@logout');
 $router->get('/logout', 'App\\Controllers\\AuthController@logout');
 
 $router->get('/register', 'App\\Controllers\\AuthController@showRegister');
@@ -22,6 +22,8 @@ $router->post('/register', 'App\\Controllers\\AuthController@register');
 
 
 // Admin
-$router->get('/admin/example', 'App\\Controllers\\AdminController@example');
-;
+$router->get('/admin/example', 'App\\Controllers\\AdminController@example')->middleware('role:admin,student');
+$router->get('/admin/dashboard', 'App\\Controllers\\AdminController@dashboard')->middleware('role:admin');
 
+// Student
+$router->get('/student/dashboard', 'App\\Controllers\\StudentController@dashboard')->middleware('role:student');

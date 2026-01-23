@@ -3,7 +3,7 @@ namespace App\Repositories;
 use App\Models\Database;
 use PDO;
 
-class AuthRepository{
+class AuthRepository {
 
     private PDO $db;
 

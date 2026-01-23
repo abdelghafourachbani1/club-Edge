@@ -22,5 +22,13 @@ class AdminController extends Controller
         $this->renderWithLayout('admin/example', $data);
     }
     
+    public function dashboard()
+    {
+        $data = [
+            'title' => 'Admin Dashboard Page',
+            'message' => 'This is an dashboard page in the Admin panel.'
+        ];
+        $this->renderWithLayout('admin/dashboard', $data);
+    }
    
 }

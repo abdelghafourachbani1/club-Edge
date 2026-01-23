@@ -16,55 +16,80 @@ class AuthController extends Controller
 
     public function register(): void
     {
-        // Simple validation example, in a real app use a Validator class
-        // $password = $_POST['password'] ?? '';
-        $password = $_POST['password'];
-        $email = $_POST['email'];
-        $firstName = $_POST['first_name'];
-        $lastName = $_POST['last_name'];
+        $password  = $_POST['password'] ?? '';
+$email     = $_POST['email'] ?? '';
+$firstName = $_POST['first_name'] ?? '';
+$lastName  = $_POST['last_name'] ?? '';
 
-        // if (empty($email) || empty($password)) {
-        //     // Handle error, for now just re-render with error (not implemented in view yet)
-        //     $this->render('auth/register', ['error' => 'Email and password are required']);
-        //     return;
-        // }
+$errors = [];
+
+$email     = trim($email);
+$firstName = trim($firstName);
+$lastName  = trim($lastName);
+
+// if ($email === '' || $password === '' || $firstName === '' || $lastName === '') {
+//     $errors[] = "All fields are required";
+// }
+
+// 3) Email (best: filter_var)
+// if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//     $errors[] = "Invalid email format";
+// }
+
+// 4) First/Last name regex (letters + spaces + - + ' , 2-50 chars)
+// Supports accents: é, à, etc. (UTF-8)
+// $nameRegex = "/^[\p{L}][\p{L}\p{M}\s'\-]{1,49}$/u";
+
+// if ($firstName !== '' && !preg_match($nameRegex, $firstName)) {
+//     $errors[] = "First name is invalid (letters only, 2-50 chars)";
+// }
+
+// if ($lastName !== '' && !preg_match($nameRegex, $lastName)) {
+//     $errors[] = "Last name is invalid (letters only, 2-50 chars)";
+// }
+
+// 5) Password regex (min 8, at least 1 upper, 1 lower, 1 digit, 1 special)
+// $passRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,64}$/";
+
+// if ($password !== '' && !preg_match($passRegex, $password)) {
+//     $errors[] = "Password must be 8-64 chars and include upper, lower, number, special";
+// }
+
+// 6) If errors -> render
+// if (!empty($errors)) {
+//     $this->render('auth/register', ['error' => implode('<br>', $errors)]);
+//     return; // IMPORTANT: stop here
+// }
+
+
+        if (empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
+            $this->renderWithLayout('auth/register', ['error' => 'All fields are required']);
+            return;
+        }
 
         $userData = [
             'password' => password_hash($password, PASSWORD_DEFAULT),
+            // 'password' => $password,
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $email
         ];
 
-        // $userData = [
-        //     'first_name' => 'Younes',
-        //     'last_name'  => 'Bahmoun',
-        //     'email'      => 'younes@gmail.com',
-        //     'password'   => password_hash('123456', PASSWORD_DEFAULT),
-        // ];
         $pdo = Database::getInstance();
         $repo = new AuthRepository();
         $id = $repo->createUser($userData);       
-        // $id = $repo->allUsers();       
-        // $id = 3;
         if ($id) {
-            // $_SESSION['user'] = [
-            //     'id'         => (int)$id,
-            //     'first_name' => $firstName,
-            //     'last_name'  => $lastName,
-            //     'email'      => $email,
-            // ];
-            $this->renderWithLayout('auth/login');
+            // header('Location: login');
+            header('Location: login'); // si tu gardes le prefix
+            exit;
+            // $this->renderWithLayout('auth/register', ['success' => 'User created successfully']);
         }else{
-            $this->renderWithLayout('auth/register', ['error' => 'Failed to create user']);
+            $this->renderWithLayout('auth/register', ['error' => 'something wrong repeated register']);
         }
-        // Pass $id to view to trigger the success message
-        $this->renderWithLayout('auth/register', ['id' => $id]);
     }
 
     public function showLogin(): void
     {
-        // TODO: Create a login view
         $this->renderWithLayout('auth/login');
     }
 
@@ -72,6 +97,10 @@ class AuthController extends Controller
     {
         $email = $_POST['email'];
         $password = $_POST['password'];
+        if (empty($email) || empty($password)) {
+            $this->renderWithLayout('auth/login', ['error' => 'All fields are required']);
+            return;
+        }
         $pdo = Database::getInstance();
         $userRepo = new UserRepository($pdo);
         // $error = null;
@@ -87,7 +116,14 @@ class AuthController extends Controller
                     'email'=> $user['email'],
                     'role'=> $user['is_admin'] ? 'admin' : 'student',
                 ];
-                $this->renderWithLayout('auth/login', ['user' => $user]);
+                if ($user['is_admin'] === true) {
+                    header('location: admin/dashboard');
+                    exit;
+                } else {
+                    header('location: student/dashboard');
+                    exit;
+                }
+                // $this->renderWithLayout('auth/login', ['user' => $user]);
             } else {
                 $error =  "Invalid password";
                 $this->renderWithLayout('auth/login', ['error' => $error]);
@@ -104,6 +140,7 @@ class AuthController extends Controller
     public function logout(): void
     {
         session_destroy();
-        $this->renderWithLayout('auth/login');
+        header('Location: /club-Edge/login');
+        exit;
     }
 }

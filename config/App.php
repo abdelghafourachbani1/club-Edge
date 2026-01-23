@@ -4,16 +4,20 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include autoloader for automatic class loading
+// Include autoloaders
 require_once __DIR__ . '/Autoload.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Load .env variables
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
 // Database credentials for PostgreSQL
-define('DB_HOST', 'localhost');
-define('DB_PORT', '5432');
-define('DB_USER', 'postgres');
-define('DB_PASS', 'password');
-define('DB_NAME', 'clubEdge');
+define('DB_HOST', $_ENV['DB_HOST'] ?? 'localhost');
+define('DB_PORT', $_ENV['DB_PORT'] ?? '5432');
+define('DB_USER', $_ENV['DB_USER'] ?? 'postgres');
+define('DB_PASS', $_ENV['DB_PASS'] ?? '');
+define('DB_NAME', $_ENV['DB_NAME'] ?? 'clubEdge');
 
 
 // App URL
