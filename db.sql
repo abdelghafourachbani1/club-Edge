@@ -1,5 +1,5 @@
-CREATE DATABASE clubEdge;
-\c clubEdge;
+CREATE DATABASE clubedge;
+\c clubedge;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
