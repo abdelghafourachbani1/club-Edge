@@ -1,0 +1,33 @@
+<div class="container">
+    <h1>Avis et Notes</h1>
+    <p style="font-size:18px ; margin-bottom:15px;">Moyenne : {{ average|number_format(1) }}/5</p>
+
+    {% if reviews is empty %}
+        <p>Aucun avis pour cet événement</p>
+    {% endif %}
+
+    {% for review in reviews %}
+        <div class="card review">
+            <strong>{{ review.first_name }} {{ review.last_name }}</strong>
+            <p style="margin:8px 0;">{{ review.rating }}</p>
+            <p>{{ review.comment }}</p>
+            {% if session.user.role=='admin' %}
+                <form method="POST" action="../reviews/{{ review.id }}/delete">
+                    <button class="btn btn-danger">Supprimer avis</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% if canReview %}
+        <div class="card" style="margin-top:18px;">
+            <h2>Laisser un avis</h2>
+            <form method="POST" action="club-Edge/clubs/{{ clubId }}/articles/{{ articleId }}/reviews/store">
+                <label>Note :</label>
+                <input type="number" name="rating" min="1" max="5" required>
+                <label>Commentaire:</label>
+                <textarea name="comment" required></textarea>
+                <button class="btn btn-success">Envoyer</button>
+            </form>
+        </div>
+    {% endif %}
+</div>

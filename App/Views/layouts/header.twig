@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Club Edge</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        header {
+            background-color: #34495e;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header .logo {
+            color: #ecf0f1;
+            font-weight: 700;
+            font-size: 22px;
+            text-decoration: none;
+        }
+        nav a {
+            color: #ecf0f1;
+            margin-left: 18px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #0b2c38;
+        }
+        nav .welcome {
+            color: #bdc3c7;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #34495e;
+            margin-top: 18px;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.8px solid #ced4da;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            min-height: 38px;
+        }
+        form textarea {
+            min-height: 90px;
+        }
+        form input[type="text"]:focus,
+        form input[type="number"]:focus,
+        form textarea:focus {
+            border-color: #0b2c38;
+            outline: none;
+        }
+
+        .btn {
+            margin-top: 30px;
+            padding: 11px 20px;
+            background-color: #0b2c38;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            min-width: 130px;
+            box-shadow: 0 4px 10px rgba(14, 53, 84, 0.4);
+        }
+        .btn:hover {
+            background-color: #0b2c38;
+            box-shadow: 0 5px 15px rgba(10, 60, 85, 0.3);
+        }
+        .error-message {
+            background-color: #bc0303;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="./" class="logo">Club Edge</a>
+    <nav>
+        <a href="/club-Edge/clubs/{{ clubId | default('1') }}/articles">Articles</a>
+        {% if session.user is defined %}
+            {% if session.user.role == 'president' %}
+                <a href="club-Edge/articles/create">Créer Article</a>
+            {% endif %}
+            <span class="welcome">Bonjour, {{ session.user.role|capitalize }}</span>
+        {% endif %}
+    </nav>
+</header>
+
+<main>

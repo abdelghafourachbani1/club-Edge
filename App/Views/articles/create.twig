@@ -1,0 +1,23 @@
+<div class="container">
+    <h1>Créer un article</h1>
+
+    {% if session.error is defined %}
+        <div class="error-message">{{ session.error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/club-Edge/articles/store">
+        <label>Titre:</label>
+        <input type="text" name="title" required>
+
+        <label>Contenu:</label>
+        <textarea name="content" required></textarea>
+
+        <label>ID de l'événement:</label>
+        <input type="number" name="event_id" required>
+
+        <label>Images:</label>
+        <textarea name="images"></textarea>
+
+        <button type="submit" class="btn">Créer Article</button>
+    </form>
+</div>

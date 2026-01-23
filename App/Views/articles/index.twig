@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Articles du club</h1>
+
+    {% if session.user is defined and session.user.role == 'president' %}
+        <a href="articles/create" class="btn btn-success">Créer un article</a>
+    {% endif %}
+
+    {% if articles is empty %}
+        <p style="margin-top:12px;">Aucun article pour ce club</p>
+    {% else %}
+        {% for article in articles %}
+            <div class="card" style="margin-top:15px;">
+                <h3>{{ article.title }}</h3>
+                <p>{{ article.content|slice(0, 120) ~ '...' }}</p>
+
+                <a href="/club-Edge/articles/{{ article.id }}" class="btn btn-primary">Détails</a>
+                <a href="/club-Edge/articles/{{ article.id }}/reviews" class="btn btn-light">Avis</a>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

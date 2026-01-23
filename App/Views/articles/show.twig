@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="card">
+        <h1>{{ article.title }}</h1>
+
+        {% if images is not empty %}
+            <div class="image-box" style="margin-top:12px;">
+                {% for img in images %}
+                    <img src="{{ img }}" alt="Image de l'article"
+                     style="max-width:150px; margin-right:8px; border-radius:6px;">
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p style="margin-top:14px;">{{ article.content }}</p>
+        <p style="margin-top:12px;"><strong>Événement :</strong> {{ event.title }}</p>
+        <a href="/club-Edge/articles/{{ article.id }}/reviews" class="btn btn-light">Voir les avis</a>
+
+        <div style="margin-top:18px;">
+            {% if canEdit %}
+                <a href="/club-Edge/articles/{{ article.id }}/edit" class="btn btn-success">Modifier</a>
+            {% endif %}
+
+            {% if canDelete %}
+                <form method="POST" action="/club-Edge/articles/{{ article.id }}/delete" style="display:inline">
+                    <button class="btn btn-danger">Supprimer</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>

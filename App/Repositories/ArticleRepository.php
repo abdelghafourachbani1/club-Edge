@@ -1,42 +1,48 @@
 <?php
 namespace App\Repositories;
+use App\Models\Database;
 use PDO;
-use App\Models\Article;
 
 class ArticleRepository{
-    private PDO $db;
+    private PDO $pdo;
     public function __construct(){
-        $this->db = require __DIR__ . '/../core/Database.php';
+        $this->pdo = Database::getInstance();
     }
-    public function create(array $data){
-        $sql = "INSERT INTO articles 
-        (title, content, images, event_id, club_id, author_id)
+
+    public function getByClub(int $clubId): array{
+        $stmt = $this->pdo->prepare('SELECT id, title, content, event_id, club_id, author_id, images 
+            FROM articles WHERE club_id = :club_id ORDER BY id DESC');
+        $stmt->execute(['club_id' => $clubId]);
+        return $stmt->fetchAll();
+    }
+
+    public function find(int $id): ?array{
+        $stmt = $this->pdo->prepare("SELECT * FROM articles WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    public function create(array $data): void{
+        $sql = " INSERT INTO articles (title, content, images, event_id, club_id, author_id) 
         VALUES (:title, :content, :images, :event_id, :club_id, :author_id)";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
     }
-    public function findById(int $id): ?Article{
-        $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = ?");
-        $stmt->execute([$id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$row) {
-            return null;
-        }
-        return new Article(
-            $row['id'],
-            $row['title'],
-            $row['content'],
-            json_decode($row['images'], true),
-            $row['event_id'],
-            $row['club_id'],
-            $row['author_id'],
-            new \DateTime($row['created_at'])
-        );
+
+    public function update(int $id, array $data): void{
+        $sql = "UPDATE articles SET title = :title, content = :content, images = :images WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id'=> $id,
+            'title'=> $data['title'],
+            'content' => $data['content'],
+            'images'=> $data['images'],
+        ]);
     }
 
-    public function delete(int $id){
-        $stmt = $this->db->prepare("DELETE FROM articles WHERE id = ?");
-        $stmt->execute([$id]);
+    public function delete(int $id): void{
+        $stmt = $this->pdo->prepare("DELETE FROM articles WHERE id = :id");
+        $stmt->execute(['id' => $id]);
     }
 }
-
