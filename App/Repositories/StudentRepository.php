@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Repositories;
+use PDO;
 
 class StudentRepository {
-    // private  PDO $pdo;
-    // public function __construct(PDO $pdo)
-    // {
-    //     $this->pdo = $pdo;
-    // }
+    private  PDO $pdo;
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
 
     // test
     public function allStudents(): array
@@ -60,6 +61,28 @@ class StudentRepository {
             ':event_id' => $eventId,
         ]);
     }
+
+    // Inscription / Désinscription à un club (Règle : 1 étudiant = 1 club)
+    public function sincrireDunClub ($studentId, $clubId):bool {
+        $sql = "INSERT INTO club_memberships (club_id, student_id)
+        VALUES (:club_id, :student_id)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':club_id' => $clubId,
+            ':student_id' => $studentId,
+        ]);
+    }
+
+    public function desinscireDunClub ($studentId, $clubId):bool {
+        $sql = "DELETE FROM club_memberships WHERE club_id = :club_id AND student_id = :student_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':club_id' => $clubId,
+            ':student_id' => $studentId,
+        ]);
+    }
+
+
 
     public function isParticipated(int $studentId, int $eventId): bool
     {
