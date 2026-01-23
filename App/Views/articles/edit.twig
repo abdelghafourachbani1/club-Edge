@@ -8,13 +8,10 @@
     <form method="POST" action="/club-Edge/articles/{{ article.id }}/update">
         <label>Titre:</label>
         <input type="text" name="title" value="{{ article.title }}" required>
-
         <label>Contenu:</label>
         <textarea name="content" required>{{ article.content }}</textarea>
-
         <label>Images:</label>
         <textarea name="images">{{ article.images }}</textarea>
-
         <button type="submit" class="btn">Mettre à jour</button>
     </form>
 </div>

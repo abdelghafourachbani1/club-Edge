@@ -1,7 +1,6 @@
 <div class="container">
     <div class="card">
         <h1>{{ article.title }}</h1>
-
         {% if images is not empty %}
             <div class="image-box" style="margin-top:12px;">
                 {% for img in images %}
@@ -19,7 +18,6 @@
             {% if canEdit %}
                 <a href="/club-Edge/articles/{{ article.id }}/edit" class="btn btn-success">Modifier</a>
             {% endif %}
-
             {% if canDelete %}
                 <form method="POST" action="/club-Edge/articles/{{ article.id }}/delete" style="display:inline">
                     <button class="btn btn-danger">Supprimer</button>
