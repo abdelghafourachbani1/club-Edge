@@ -17,8 +17,6 @@ $router->get('/test', static function (): void {
 // $router->get('/register', 'App\\Controllers\\AuthController@showRegister');
 // $router->post('/register', 'App\\Controllers\\AuthController@register');
 // Admin
-$router->get('/admin/example', 'App\\Controllers\\AdminController@example');
-
 
 //articles
 $router->get('/clubs/{id}/articles', 'App\\Controllers\\ArticleController@index');
@@ -33,3 +31,5 @@ $router->post('/reviews/{id}/delete','App\\Controllers\\ReviewController@delete'
 
 ///detail
 $router->get('/articles/{id}','App\\Controllers\\ArticleController@show');
+$router->get('/admin/example', 'App\\Controllers\\AdminController@example');
+// ->middleware('role:admin');
