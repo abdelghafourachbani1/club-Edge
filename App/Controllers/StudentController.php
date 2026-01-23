@@ -41,4 +41,27 @@ class StudentController extends Controller
         $this->studentRepo->desinscireEvent($_SESSION['user']['id'], $_GET['event_id']);
         $this->renderWithLayout('student/dashboard');
     }
+
+    // // Inscription / Désinscription à un club (Règle : 1 étudiant = 1 club) max 8 membre en club
+    public function sincrireDunClub ($clubId) {
+        $isParticipatedInClub = $this->studentRepo->isParticipatedInClub($_SESSION['user']['id']);
+        if ($isParticipatedInClub) {
+            $error = "peut être inscrit dans un seul club";
+            $this->renderWithLayout('student/dashboard', 'error', $error);
+            return;
+        }
+        $nomreClub = $this->studentRepo->nombreClub($clubId);
+        if ($nomreClub == 0) {
+            $this->studentRepo->sincrireDunClub($_SESSION['user']['id'], $_GET['club_id'], true);
+            $this->renderWithLayout('student/dashboard');
+        } elseif ($nomreClub < 8) {
+            $this->studentRepo->sincrireDunClub($_SESSION['user']['id'], $_GET['club_id']);
+            $this->renderWithLayout('student/dashboard');
+        } else {
+            $error = "club contient maximum 8 membres";
+            $this->renderWithLayout('student/dashboard', 'error', $error);
+        }
+    }
+
+
 }

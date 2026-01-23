@@ -63,13 +63,14 @@ class StudentRepository {
     }
 
     // Inscription / Désinscription à un club (Règle : 1 étudiant = 1 club)
-    public function sincrireDunClub ($studentId, $clubId):bool {
-        $sql = "INSERT INTO club_memberships (club_id, student_id)
+    public function sincrireDunClub ($studentId, $clubId, $is_president = false):bool {
+        $sql = "INSERT INTO club_memberships (club_id, student_id, is_president)
         VALUES (:club_id, :student_id)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':club_id' => $clubId,
             ':student_id' => $studentId,
+            ':is_president' => $is_president,
         ]);
     }
 
@@ -82,16 +83,24 @@ class StudentRepository {
         ]);
     }
 
+    // nombre club
+    public function nombreClub ($clubId) {
+        $sql = "SELECT COUNT(*) FROM club_memberships WHERE club_id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($clubId);
+        return $stmt->fetchColumn();
+    }
 
-
-    public function isParticipated(int $studentId, int $eventId): bool
+    // check étudiant peut être inscrit dans un seul club
+    public function isParticipatedInClub(int $studentId): bool
     {
-        $sql = "SELECT 1 FROM participations WHERE student_id = :student_id AND event_id = :event_id LIMIT 1";
+        $sql = "SELECT 1 FROM club_memberships WHERE student_id = :student_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':student_id' => $studentId,
-            ':event_id' => $eventId,
         ]);
         return (bool) $stmt->fetchColumn();
     }
+
+    
 }
