@@ -35,10 +35,9 @@ class Router {
         return $this;
     }
 
-    public function middleware(array|string $middleware): self
-    {
-        $_SESSION['user'] = ['role' => 'admin', 'email' => 'admin@test.com']; // for testing
-        // unset($_SESSION['user']);
+    public function middleware(array|string $middleware): self {
+        // $_SESSION['user'] = ['role' => 'admin', 'email' => 'admin@test.com']; // for testing
+        unset($_SESSION['user']);
         $methods = array_keys($this->routes);
         foreach ($methods as $method) {
             if (!empty($this->routes[$method])) {
@@ -102,8 +101,7 @@ class Router {
         }
     }
 
-    private function addRoute(string $method, string $path, $handler): self
-    {
+    private function addRoute(string $method, string $path, $handler): self {
         $method = strtoupper($method);
         $path = '/' . trim($path, '/');
         if ($path === '//') {
