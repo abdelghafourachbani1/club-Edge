@@ -12,9 +12,7 @@ class Controller
 {
     protected Environment $twig;
 
-    public function __construct()
-    {
-        // CSRF protection for non-GET requests
+    public function __construct() {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
             if (!Security::validateCsrfToken($token)) {
