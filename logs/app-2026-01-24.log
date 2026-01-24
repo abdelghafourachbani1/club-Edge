@@ -1,0 +1,1 @@
+[2026-01-24 14:19:07] [ERROR] Uncaught Exception: Controller not found: App\Controllers\ReviewController {"file":"\/var\/www\/club-Edge\/core\/Router.php","line":151,"trace":"#0 \/var\/www\/club-Edge\/core\/Router.php(86): Router->invoke()\n#1 \/var\/www\/club-Edge\/public\/index.php(17): Router->dispatch()\n#2 \/var\/www\/club-Edge\/index.php(7): require('...')\n#3 {main}"}

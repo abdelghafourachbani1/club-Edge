@@ -1,0 +1,148 @@
+{# Edit Event Form (President Only) #}
+
+<div class="container mx-auto px-4 py-8 max-w-3xl">
+    <a href="/events/{{ event.id }}" class="text-blue-500 hover:underline mb-4 inline-block">&larr; Back to Event</a>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-3xl font-bold mb-6">Edit Event</h1>
+
+        {# Error Messages #}
+        {% if session.errors is defined %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <ul>
+                    {% for error in session.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form action="/events/{{ event.id }}/update" method="POST" enctype="multipart/form-data">
+            {# CSRF Token #}
+            {# <input type="hidden" name="csrf_token" value="{{ csrf_token }}"> #}
+
+            {# Event Title #}
+            <div class="mb-4">
+                <label for="title" class="block text-gray-700 font-semibold mb-2">
+                    Event Title <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="title" 
+                    name="title" 
+                    required
+                    value="{{ event.title }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >
+            </div>
+
+            {# Description #}
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-semibold mb-2">
+                    Description <span class="text-red-500">*</span>
+                </label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    required
+                    rows="5"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >{{ event.description }}</textarea>
+            </div>
+
+            {# Date and Time #}
+            <div class="mb-4">
+                <label for="event_date" class="block text-gray-700 font-semibold mb-2">
+                    Event Date & Time <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="datetime-local" 
+                    id="event_date" 
+                    name="event_date" 
+                    required
+                    value="{{ event.eventDate|date('Y-m-d\\TH:i') }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >
+            </div>
+
+            {# Location #}
+            <div class="mb-4">
+                <label for="location" class="block text-gray-700 font-semibold mb-2">
+                    Location <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="location" 
+                    name="location" 
+                    required
+                    value="{{ event.location }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >
+            </div>
+
+            {# Status #}
+            <div class="mb-4">
+                <label for="status" class="block text-gray-700 font-semibold mb-2">
+                    Status <span class="text-red-500">*</span>
+                </label>
+                <select 
+                    id="status" 
+                    name="status" 
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >
+                    <option value="active" {% if event.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="cancelled" {% if event.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    <option value="finished" {% if event.status == 'finished' %}selected{% endif %}>Finished</option>
+                </select>
+            </div>
+
+            {# Current Images #}
+            {% if event.images|length > 0 %}
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Current Images</label>
+                    <div class="flex gap-2 flex-wrap">
+                        {% for image in event.images %}
+                            <div class="relative">
+                                <img src="{{ image }}" alt="Event image" class="w-24 h-24 object-cover rounded border">
+                                {# TODO: Add delete image functionality #}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Add New Images #}
+            <div class="mb-6">
+                <label for="images" class="block text-gray-700 font-semibold mb-2">
+                    Add More Images (Optional)
+                </label>
+                <input 
+                    type="file" 
+                    id="images" 
+                    name="images[]" 
+                    multiple
+                    accept="image/*"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                >
+                <p class="text-sm text-gray-500 mt-1">Upload additional images (JPG, PNG, GIF, WebP - Max 5MB each)</p>
+            </div>
+
+            {# Submit Buttons #}
+            <div class="flex gap-4">
+                <button 
+                    type="submit" 
+                    class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition font-semibold"
+                >
+                    Update Event
+                </button>
+                <a 
+                    href="/events/{{ event.id }}" 
+                    class="bg-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-400 transition font-semibold"
+                >
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
