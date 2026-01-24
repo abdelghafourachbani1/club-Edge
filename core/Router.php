@@ -22,8 +22,7 @@ class Router {
         return $this->addRoute('GET', $path, $handler);
     }
 
-    public function post(string $path, $handler): self
-    {
+    public function post(string $path, $handler): self {
         return $this->addRoute('POST', $path, $handler);
     }
 
@@ -36,20 +35,22 @@ class Router {
     }
 
     public function middleware(array|string $middleware): self {
-        // $_SESSION['user'] = ['role' => 'admin', 'email' => 'admin@test.com']; // for testing
-        unset($_SESSION['user']);
+        
         $methods = array_keys($this->routes);
         foreach ($methods as $method) {
             if (!empty($this->routes[$method])) {
                 $lastIndex = count($this->routes[$method]) - 1;
-                $currentMiddleware = (array)$middleware;
-                $this->routes[$method][$lastIndex]['middleware'] = array_merge(
-                    $this->routes[$method][$lastIndex]['middleware'] ?? [],
-                    $currentMiddleware
-                );
+                
+                if ($lastIndex >= 0) {
+                    $currentMiddleware = (array)$middleware;
+                    $this->routes[$method][$lastIndex]['middleware'] = array_merge(
+                        $this->routes[$method][$lastIndex]['middleware'] ?? [],
+                        $currentMiddleware
+                    );
+                }
             }
         }
-        return $this;
+        return $this;  
     }
 
     public function dispatch(?string $requestUri = null, ?string $method = null): void {
@@ -81,12 +82,18 @@ class Router {
         
         foreach ($this->routes[$method] ?? [] as $route) {
             $params = [];
+            
+            error_log("Testing route: {$route['path']} against path: {$path}");
+            file_put_contents('/tmp/router_debug.txt', "Testing: {$route['path']} vs {$path}\n", FILE_APPEND);
+            
             if ($this->match($route['path'], $path, $params)) {
+                error_log("MATCH FOUND! Route: {$route['path']}, Params: " . json_encode($params));
+                
                 $this->runMiddleware($route['middleware'] ?? [], $params);
                 $this->invoke($route['handler'], $params);
                 return;
-                }
-                }
+            }
+        }
 
 
         // 404

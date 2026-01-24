@@ -85,36 +85,44 @@ public function show(int $id): void {
         $isRegistered = $this->participationRepo->isRegistered($_SESSION['user_id'], $id);
     }
 
-    $reviewRepo = new \App\Repositories\ReviewRepository();
-    $reviews = $reviewRepo->findByEventId($id);
-    $averageRating = $reviewRepo->getAverageRating($id);
-
-    $articleRepo = new \App\Repositories\ArticleRepository();
-    $articles = $articleRepo->findByEventId($id);
+    // ✅ COMMENTEZ CES LIGNES TEMPORAIREMENT
+    // $reviewRepo = new \App\Repositories\ReviewRepository();
+    // $reviews = $reviewRepo->findByEventId($id);
+    // $averageRating = $reviewRepo->getAverageRating($id);
+    // $articleRepo = new \App\Repositories\ArticleRepository();
+    // $articles = $articleRepo->findByEventId($id);
 
     $this->renderWithLayout('events/show', [
         'event' => $event,
         'participants' => $participants,
         'participantCount' => $participantCount,
         'isRegistered' => $isRegistered,
-        'reviews' => $reviews,              
-        'averageRating' => $averageRating,  
-        'articles' => $articles,            
+        // 'reviews' => $reviews,              
+        // 'averageRating' => $averageRating,  
+        // 'articles' => $articles,            
         'title' => $event->getTitle()
     ]);
 }
 
-    public function create(): void {
-        // TODO: Add authentication check - president only
-        if (!isset($_SESSION['user_id']) || !$this->isPresident($_SESSION['user_id'])) {
-            $this->redirect('/login');
-            return;
-        }
-
-        $this->renderWithLayout('events/create', [
-            'title' => 'Create New Event'
-        ]);
+public function create(): void {
+    // ✅ SIMPLIFIER TEMPORAIREMENT
+    if (!isset($_SESSION['user_id'])) {
+        $this->redirect('/events');
+        return;
     }
+
+    // ✅ VÉRIFICATION SIMPLE PAR RÔLE
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'president') {
+        echo "<h1 style='color: red;'>Access Denied</h1>";
+        echo "<p>Only presidents can create events</p>";
+        echo "<a href='/club-Edge/events'>← Back to events</a>";
+        exit;
+    }
+
+    $this->renderWithLayout('events/create', [
+        'title' => 'Create New Event'
+    ]);
+}
 
     public function store(): void {
         $errors = [];
