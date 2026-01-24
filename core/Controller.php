@@ -12,7 +12,8 @@ class Controller
 {
     protected Environment $twig;
 
-    public function __construct() {
+    public function __construct()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
             if (!Security::validateCsrfToken($token)) {
@@ -30,6 +31,7 @@ class Controller
         // Add CSRF helpers to Twig
         $this->twig->addFunction(new TwigFunction('csrf_token', [Security::class, 'getCsrfToken']));
         $this->twig->addFunction(new TwigFunction('csrf_field', [Security::class, 'csrfField'], ['is_safe' => ['html']]));
+        $this->twig->addGlobal('session', $_SESSION);
     }
 
     protected function log(string $level, string $message, array $context = []): void
@@ -44,6 +46,9 @@ class Controller
     protected function render(string $view, array $data = []): void
     {
         $viewFile = $this->resolveViewPath($view);
+
+        // Ensure session is up to date in Twig
+        $this->twig->addGlobal('session', $_SESSION);
 
         if (str_ends_with($viewFile, '.twig')) {
             // Twig needs path relative to App/Views
