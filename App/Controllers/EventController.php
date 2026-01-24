@@ -69,32 +69,40 @@ class EventController extends \Controller {
         ]);
     }
 
-    public function show(int $id): void {
-        $event = $this->eventRepo->findById($id);
+public function show(int $id): void {
+    $event = $this->eventRepo->findById($id);
 
-        if (!$event) {
-            $this->redirect('/events');
-            return;
-        }
-
-        // Get participants list
-        $participants = $this->participationRepo->getParticipants($id);
-        $participantCount = count($participants);
-
-        // Check if current user is registered (assuming session exists)
-        $isRegistered = false;
-        if (isset($_SESSION['user_id'])) {
-            $isRegistered = $this->participationRepo->isRegistered($_SESSION['user_id'], $id);
-        }
-
-        $this->renderWithLayout('events/show', [
-            'event' => $event,
-            'participants' => $participants,
-            'participantCount' => $participantCount,
-            'isRegistered' => $isRegistered,
-            'title' => $event->getTitle()
-        ]);
+    if (!$event) {
+        $this->redirect('/events');
+        return;
     }
+
+    $participants = $this->participationRepo->getParticipants($id);
+    $participantCount = count($participants);
+
+    $isRegistered = false;
+    if (isset($_SESSION['user_id'])) {
+        $isRegistered = $this->participationRepo->isRegistered($_SESSION['user_id'], $id);
+    }
+
+    $reviewRepo = new \App\Repositories\ReviewRepository();
+    $reviews = $reviewRepo->findByEventId($id);
+    $averageRating = $reviewRepo->getAverageRating($id);
+
+    $articleRepo = new \App\Repositories\ArticleRepository();
+    $articles = $articleRepo->findByEventId($id);
+
+    $this->renderWithLayout('events/show', [
+        'event' => $event,
+        'participants' => $participants,
+        'participantCount' => $participantCount,
+        'isRegistered' => $isRegistered,
+        'reviews' => $reviews,              
+        'averageRating' => $averageRating,  
+        'articles' => $articles,            
+        'title' => $event->getTitle()
+    ]);
+}
 
     public function create(): void {
         // TODO: Add authentication check - president only
